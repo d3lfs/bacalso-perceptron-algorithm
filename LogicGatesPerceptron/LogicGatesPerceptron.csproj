@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LogicGatesPerceptron.Common\LogicGatesPerceptron.Common.csproj" />
+    <ProjectReference Include="..\LogicGatesPerceptron.Utils\LogicGatesPerceptron.Utils.csproj" />
   </ItemGroup>
 
   <ItemGroup>
