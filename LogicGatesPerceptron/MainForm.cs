@@ -16,12 +16,15 @@ namespace LogicGatesPerceptron
         Bitmap _bmp;
         Perceptron perceptron;
 
+        private Task? _trainTask;
+        private CancellationTokenSource? _ctsAuto;
+
         public MainForm()
         {
             InitializeComponent();
-            perceptron = new Perceptron(225, 0.01, 1, true);
+            perceptron = new Perceptron(225, 0.01, 0.5, true);
             learningRate.Text = perceptron.LearningRate.ToString();
-            
+
             _bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
             _canvas = Graphics.FromImage(_bmp);
             _canvas.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
@@ -87,25 +90,34 @@ namespace LogicGatesPerceptron
             var bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
 
             canvasContainer.DrawToBitmap(bmp, new Rectangle(0, 0, canvasContainer.Width, canvasContainer.Height));
-            
+            //bmp.Save(Path.Combine(AppContext.BaseDirectory, "images", $"original-{TimeStamp.GetUTCNow()}-{labelY.Text}.png"), ImageFormat.Png);
+
             var image = DIP.ResizeImage(bmp, 15, 15);
-            //image.Save(Path.Combine(AppContext.BaseDirectory, "images", $"{TimeStamp.GetUTCNow()}-{epochsInput.Text}.png"), ImageFormat.Png);
+            //image.Save(Path.Combine(AppContext.BaseDirectory, "images", $"{TimeStamp.GetUTCNow()}-{labelY.Text}.png"), ImageFormat.Png);
             image.Save(ms, ImageFormat.Png);
 
             pictureBox.Image = image;
             predictedOutput.Text = perceptron.Prediction(DIP.GetBits(ms));
         }
 
-        private void Train()
+        private async Task Train(CancellationToken token)
         {
-            var images = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "images"), "*.png");
-            for (int i = 0; i < Convert.ToInt32(epochsInput.Text); i++)
+            var images = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "images"), "*.png")
+                            .Where(file => !file.Contains("original"))
+                            .ToArray();
+            var rand = new Random();
+            images = images.OrderBy(x => rand.Next()).ToArray();
+
+            for (int i = 0; i < Convert.ToInt32(epochsInput.Text) && !token.IsCancellationRequested; i++)
             {
-                for (int j = 0; j < images.Length; j++)
+                for (int j = 0; j < images.Length && !token.IsCancellationRequested; j++)
                 {
-                    dataSetsFeed.Items.Add(Path.GetFileNameWithoutExtension(images[j]));
-                    dataSetsFeed.SelectedIndex = dataSetsFeed.Items.Count - 1;
-                    dataSetsFeed.SelectedIndex = -1;
+                    dataSetsFeed.Invoke(new Action(() =>
+                    {
+                        dataSetsFeed.Items.Add($"Img: {Path.GetFileNameWithoutExtension(images[j])}   T: {Math.Abs(perceptron.TotalError)}");
+                        dataSetsFeed.SelectedIndex = dataSetsFeed.Items.Count - 1;
+                    }));
+                   
 
                     var x = new MemoryStream();
                     var image = Image.FromFile(images[j]);
@@ -113,21 +125,44 @@ namespace LogicGatesPerceptron
                     
                     var y = int.Parse(Path.GetFileNameWithoutExtension(images[j]).Last().ToString());
 
+                    // Set Perceptron Input and DesiredOutput Here
                     perceptron.SetInput(DIP.GetBits(x));
                     perceptron.SetDesiredOutput(y);
+                    // Start Training
                     perceptron.Learn();
                 }
 
-                if (perceptron.TotalError < 0.5)
+                if (Math.Abs(perceptron.TotalError) < 0.01)
                     break;
             }
 
-            totalErrorLabel.Text = $"Total Error: {Math.Abs(perceptron.TotalError).ToString()}";
+            totalErrorLabel.Invoke(new Action(() =>
+            {
+                totalErrorLabel.Text = $"Total Error: {Math.Abs(perceptron.TotalError).ToString()}";
+            }));
         }
+
+        
 
         private void trainBtn_Click(object sender, EventArgs e)
         {
-            Train();
+            _ctsAuto = new CancellationTokenSource();
+            _trainTask = Task.Run(async () =>
+            {
+                try
+                {
+                    await Train(_ctsAuto!.Token);
+                } 
+                catch { }
+                finally
+                {
+                    _ctsAuto?.Dispose();
+                    _ctsAuto = null;
+                }
+            }, _ctsAuto!.Token);
+
+            trainBtn.Enabled = false;
+            resetPerceptronModel.Enabled = false;
         }
 
         private void learningRateTrackbar_Scroll(object sender, EventArgs e)
@@ -141,8 +176,54 @@ namespace LogicGatesPerceptron
         {
             perceptron = new Perceptron(225, 0.01, 1, true);
             learningRate.Text = perceptron.LearningRate.ToString();
-            totalErrorLabel.Text = "0";
+            totalErrorLabel.Text = "Total Error:";
             dataSetsFeed.Items.Clear();
+        }
+
+        private void randCharImageBtn_Click(object sender, EventArgs e)
+        {
+            var images = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "images"), "*.png")
+                            .Where(file => file.Contains("original"))
+                            .ToArray();
+
+            var rand = new Random();
+
+            var image = Image.FromFile(images[rand.Next(0, images.Length)]);
+            _canvas = Graphics.FromImage(image);
+            canvasContainer.Image = image;
+        }
+
+        private async void stopTraining_Click(object sender, EventArgs e)
+        {
+            _ctsAuto?.Cancel();
+            await ForTrueAsync(() => _ctsAuto is null, 20);
+            _trainTask?.Dispose();
+            trainBtn.Enabled = true;
+            resetPerceptronModel.Enabled = true;
+        }
+
+        public async ValueTask<bool> ForTrueAsync(Func<bool> predicate, int timeout, int sleepOverride = -1, CancellationToken token = default)
+        {
+            return await ForTrueAsync(predicate, null, timeout, sleepOverride, token);
+        }
+
+        public async ValueTask<bool> ForTrueAsync(Func<bool> predicate, Action? loopFunction, int timeout, int sleepOverride = -1, CancellationToken token = default)
+        {
+            try
+            {
+                int counter = 0;
+                while (!predicate() && !token.IsCancellationRequested)
+                {
+                    if (timeout > 0 && counter >= timeout)
+                        return false;
+                    loopFunction?.Invoke();
+                    await Task.Delay(sleepOverride == -1 ? 20 : sleepOverride, token);
+                    counter++;
+                }
+                return true;
+            }
+            catch { }
+            return false;
         }
     }
 }

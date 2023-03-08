@@ -45,6 +45,9 @@
             this.learningRateTrackbar = new System.Windows.Forms.TrackBar();
             this.label5 = new System.Windows.Forms.Label();
             this.learningRate = new System.Windows.Forms.Label();
+            this.randCharImageBtn = new System.Windows.Forms.Button();
+            this.labelY = new System.Windows.Forms.TextBox();
+            this.stopTraining = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasContainer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.learningRateTrackbar)).BeginInit();
@@ -160,7 +163,7 @@
             // totalErrorLabel
             // 
             this.totalErrorLabel.AutoSize = true;
-            this.totalErrorLabel.Location = new System.Drawing.Point(279, 508);
+            this.totalErrorLabel.Location = new System.Drawing.Point(281, 344);
             this.totalErrorLabel.Name = "totalErrorLabel";
             this.totalErrorLabel.Size = new System.Drawing.Size(63, 15);
             this.totalErrorLabel.TabIndex = 12;
@@ -170,14 +173,14 @@
             // 
             this.dataSetsFeed.FormattingEnabled = true;
             this.dataSetsFeed.ItemHeight = 15;
-            this.dataSetsFeed.Location = new System.Drawing.Point(279, 278);
+            this.dataSetsFeed.Location = new System.Drawing.Point(279, 372);
             this.dataSetsFeed.Name = "dataSetsFeed";
             this.dataSetsFeed.Size = new System.Drawing.Size(300, 214);
             this.dataSetsFeed.TabIndex = 13;
             // 
             // resetPerceptronModel
             // 
-            this.resetPerceptronModel.Location = new System.Drawing.Point(21, 491);
+            this.resetPerceptronModel.Location = new System.Drawing.Point(21, 531);
             this.resetPerceptronModel.Name = "resetPerceptronModel";
             this.resetPerceptronModel.Size = new System.Drawing.Size(239, 32);
             this.resetPerceptronModel.TabIndex = 14;
@@ -215,11 +218,42 @@
             this.learningRate.TabIndex = 17;
             this.learningRate.Text = "0";
             // 
+            // randCharImageBtn
+            // 
+            this.randCharImageBtn.Location = new System.Drawing.Point(141, 273);
+            this.randCharImageBtn.Name = "randCharImageBtn";
+            this.randCharImageBtn.Size = new System.Drawing.Size(121, 34);
+            this.randCharImageBtn.TabIndex = 18;
+            this.randCharImageBtn.Text = "Rand Char Image";
+            this.randCharImageBtn.UseVisualStyleBackColor = true;
+            this.randCharImageBtn.Click += new System.EventHandler(this.randCharImageBtn_Click);
+            // 
+            // labelY
+            // 
+            this.labelY.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.labelY.Location = new System.Drawing.Point(281, 184);
+            this.labelY.Name = "labelY";
+            this.labelY.Size = new System.Drawing.Size(83, 23);
+            this.labelY.TabIndex = 19;
+            // 
+            // stopTraining
+            // 
+            this.stopTraining.Location = new System.Drawing.Point(21, 493);
+            this.stopTraining.Name = "stopTraining";
+            this.stopTraining.Size = new System.Drawing.Size(239, 32);
+            this.stopTraining.TabIndex = 20;
+            this.stopTraining.Text = "Stop training";
+            this.stopTraining.UseVisualStyleBackColor = true;
+            this.stopTraining.Click += new System.EventHandler(this.stopTraining_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(607, 554);
+            this.ClientSize = new System.Drawing.Size(624, 631);
+            this.Controls.Add(this.stopTraining);
+            this.Controls.Add(this.labelY);
+            this.Controls.Add(this.randCharImageBtn);
             this.Controls.Add(this.learningRate);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.learningRateTrackbar);
@@ -265,5 +299,8 @@
         private TrackBar learningRateTrackbar;
         private Label label5;
         private Label learningRate;
+        private Button randCharImageBtn;
+        private TextBox labelY;
+        private Button stopTraining;
     }
 }
