@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace LogicGatesPerceptron.Utils
@@ -96,6 +97,44 @@ namespace LogicGatesPerceptron.Utils
             }
 
             return binData;
+        }
+
+        public static int[] GetBits(MemoryStream memoryStream)
+        {
+            var img = Image.FromStream(memoryStream);
+            var bmp = new Bitmap(img);
+
+            if (img.Width != 15 || img.Height != 15)
+            {
+                img = ResizeImage(img, 15, 15);
+                bmp = new Bitmap(img);
+            }
+
+            int[] bits = new int[225];
+            int k = 0;
+            for (int i = 0; i < bmp.Height; i++)
+            {
+                for (int j = 0; j < bmp.Width; j++)
+                {
+                    int a = int.Parse(bmp.GetPixel(j, i).A.ToString());
+                    int r = int.Parse(bmp.GetPixel(j, i).R.ToString());
+                    int g = int.Parse(bmp.GetPixel(j, i).G.ToString());
+                    int b = int.Parse(bmp.GetPixel(j, i).B.ToString());
+
+                    if ((a > 0) && (r > 0) && (g > 0) && (b > 0))
+                    {
+                        bits[k] = 0;
+                    }
+                    else
+                    {
+                        bits[k] = 1;
+                    }
+
+                    k++;
+                }
+            }
+
+            return bits;
         }
     }
 }

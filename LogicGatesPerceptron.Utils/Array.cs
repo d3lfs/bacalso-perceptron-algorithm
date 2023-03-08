@@ -7,7 +7,7 @@
             return new T[size];
         }
 
-        public static T[] Randomize(int size)
+        public static T[] NormalDistribution(int size)
         {
             var rand = new Random();
             var array = new T[size];

@@ -1,4 +1,5 @@
 ﻿using LogicGatesPerceptron.Utils;
+using System.Diagnostics;
 
 namespace LogicGatesPerceptron.Common
 {
@@ -8,79 +9,64 @@ namespace LogicGatesPerceptron.Common
         private double _learningRate;
         private double[] _weights;
 
-        private List<int[]> _x_i;
-        private int[] _y_i;
-
         private double _totalError;
 
-        public Perceptron(int weightSize, double learningRate = 0.01, double bias = 1, bool randomizeWeightsandBias = true)
+        private int[] _input;
+        private int _output;
+
+        public Perceptron(int weightSize, double learningRate = 0.001, double bias = 0.5, bool randomizeWeights = true)
         {          
             _totalError = 0;
             _learningRate = learningRate;
             _weights = Array<double>.AllZeroes(weightSize);
-            _x_i = new List<int[]>(4);
-            _y_i = new int[4];
-            
-            if (randomizeWeightsandBias)
+            _bias = bias;
+
+            if (randomizeWeights)
             {
                 var rand = new Random();
-                _weights = Array<double>.Randomize(weightSize);
-                _bias = rand.NextDouble() * 2 - 1;
+                _weights = Array<double>.NormalDistribution(weightSize);
             }
-            else
+        }
+        
+        public double[] Weights { get => _weights; }
+
+        public double TotalError { get => _totalError; }
+
+        public void SetInput(int[] input)
+        {
+            _input = input;
+        }
+
+        public void SetDesiredOutput(int output)
+        {
+            _output = output;
+        }
+
+        public int Prediction(string input)
+        {
+            int[] inputArr = new int[input.Length];
+            for (int i = 0; i < input.Length; i++)
             {
-                _bias = bias;
+                inputArr[i] = int.Parse(input[i].ToString());
             }
-        }
+            
+            var linear_output = NetInput(inputArr);
+            var y_pred = Activation(linear_output);
 
-        public double Bias
-        {
-            get { return _bias; }
-            set { _bias = value; }
-        }
-
-        public double LearningRate
-        {
-            get { return _learningRate; }
-            set { _learningRate = value; }
-        }
-
-        public double[] Weights
-        {
-            get 
-            { 
-                return _weights; 
-            }
-        }
-
-        public List<int[]> X_i 
-        {
-            get => _x_i; 
-            set
-            {
-                _x_i = value;
-            }
-        }
-        public int[] Y_i
-        {
-            get => _y_i;
-            set
-            {
-                _y_i = value;
-            }
+            return y_pred > 0.5 ? 1 : 0;
         }
 
         /// <summary>
-        /// This method will perform the dot product of weights and the in input instance.
+        /// This method will perform the dot product of weights and input instance.
         /// </summary>
         /// <param name="x">The input instance</param>
         /// <returns>The output of dot product</returns>
-        public double NetInput(int[] x)
+        private double NetInput(int[] input)
         {
             double dotProduct = 0;
-            for (int i = 0; i < x.Length; i++)
+            for (int i = 0; i < input.Length; i++)
             {
-                dotProduct += x[i] * _weights[i];
+                dotProduct += _weights[i] * int.Parse(_input[i].ToString());
             }
 
             dotProduct += _bias;
@@ -93,7 +79,7 @@ namespace LogicGatesPerceptron.Common
         /// </summary>
         /// <param name="netInput">The output of the dot product</param>
         /// <returns>y' value</returns>
-        public double Activation(double netInput)
+        private double Activation(double netInput)
         {
             // using sigmoid function
             return 1 / (1 + Math.Exp(-netInput));
@@ -103,28 +89,20 @@ namespace LogicGatesPerceptron.Common
         ///  This method will train the perceptron with the given input instances.
         /// </summary>
         /// <param name="epoch">The number of iterations to train the perceptron</param>
-        public void Train(int epoch = 100)
+        public void Learn()
         {
-            for (int start = 0; start < epoch; start++)
+            var linear_output = NetInput(_input);
+            var y_pred = Activation(linear_output);
+            var error = _output - y_pred;
+
+            // Update weights
+            for (int i = 0; i < _weights.Length; i++)
             {
-                for (int i = 0; i < X_i.Count; i++)
-                {
-                    var linear_output = NetInput(X_i[i]);
-                    var y_pred = Activation(linear_output);
-                    var error = Y_i[i] - y_pred;
-
-                    // O(1) optimization since we know the size of the weights array
-                    // and it's only in the sense of logic gate which is 2 inputs 1 and 0.
-                    _weights[0] += _learningRate * error * X_i[i][0];
-                    _weights[1] += _learningRate * error * X_i[i][1];
-
-                    _bias += LearningRate * error;
-                    _totalError += error;
-                }
-
-                if (_totalError <= 0)
-                    break;
+                _weights[i] += _learningRate * error * _input[i];
             }
+
+            _bias += _learningRate * error;
+            _totalError += error;
         }
     }
 }

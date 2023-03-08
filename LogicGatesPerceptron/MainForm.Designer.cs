@@ -34,7 +34,11 @@
             this.canvasContainer = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.labelInput = new System.Windows.Forms.TextBox();
+            this.epochsInput = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.trainBtn = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.predictedOutput = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasContainer)).BeginInit();
             this.SuspendLayout();
@@ -93,25 +97,67 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(281, 157);
+            this.label2.Location = new System.Drawing.Point(370, 12);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(98, 15);
             this.label2.TabIndex = 6;
             this.label2.Text = "Predicted Output";
             // 
-            // labelInput
+            // epochsInput
             // 
-            this.labelInput.Location = new System.Drawing.Point(143, 313);
-            this.labelInput.Name = "labelInput";
-            this.labelInput.Size = new System.Drawing.Size(119, 23);
-            this.labelInput.TabIndex = 7;
+            this.epochsInput.Location = new System.Drawing.Point(21, 391);
+            this.epochsInput.Name = "epochsInput";
+            this.epochsInput.Size = new System.Drawing.Size(116, 23);
+            this.epochsInput.TabIndex = 7;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(21, 373);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(48, 15);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Epochs:";
+            // 
+            // trainBtn
+            // 
+            this.trainBtn.Location = new System.Drawing.Point(143, 384);
+            this.trainBtn.Name = "trainBtn";
+            this.trainBtn.Size = new System.Drawing.Size(119, 34);
+            this.trainBtn.TabIndex = 9;
+            this.trainBtn.Text = "Train";
+            this.trainBtn.UseVisualStyleBackColor = true;
+            this.trainBtn.Click += new System.EventHandler(this.trainBtn_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label4.Location = new System.Drawing.Point(12, 332);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(171, 30);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Train Perceptron";
+            // 
+            // predictedOutput
+            // 
+            this.predictedOutput.AutoSize = true;
+            this.predictedOutput.Location = new System.Drawing.Point(379, 39);
+            this.predictedOutput.Name = "predictedOutput";
+            this.predictedOutput.Size = new System.Drawing.Size(13, 15);
+            this.predictedOutput.TabIndex = 11;
+            this.predictedOutput.Text = "0";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(552, 388);
-            this.Controls.Add(this.labelInput);
+            this.ClientSize = new System.Drawing.Size(576, 441);
+            this.Controls.Add(this.predictedOutput);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.trainBtn);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.epochsInput);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.canvasContainer);
@@ -134,6 +180,10 @@
         private PictureBox canvasContainer;
         private Label label1;
         private Label label2;
-        private TextBox labelInput;
+        private TextBox epochsInput;
+        private Label label3;
+        private Button trainBtn;
+        private Label label4;
+        private Label predictedOutput;
     }
 }

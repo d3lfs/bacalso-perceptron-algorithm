@@ -1,5 +1,6 @@
 using LogicGatesPerceptron.Common;
 using LogicGatesPerceptron.Utils;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 
 namespace LogicGatesPerceptron
@@ -18,7 +19,7 @@ namespace LogicGatesPerceptron
         public MainForm()
         {
             InitializeComponent();
-            perceptron = new Perceptron(15, 1, 1, true);
+            perceptron = new Perceptron(225, 0.001, 1, true);
             
             _bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
             _canvas = Graphics.FromImage(_bmp);
@@ -88,11 +89,39 @@ namespace LogicGatesPerceptron
             
 
             var image = DIP.ResizeImage(bmp, 15, 15);
-            image.Save(Path.Combine(AppContext.BaseDirectory, "images", $"{TimeStamp.GetUTCNow()}-{labelInput.Text}.png"), ImageFormat.Png);
+            image.Save(Path.Combine(AppContext.BaseDirectory, "images", $"{TimeStamp.GetUTCNow()}-{epochsInput.Text}.png"), ImageFormat.Png);
 
             pictureBox.Image = image;
+        }
 
-            
+        private void Train()
+        {
+            var images = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "images"), "*.png");
+            for (int i = 0; i < Convert.ToInt32(epochsInput.Text); i++)
+            {
+                for (int j = 0; j < images.Length; j++)
+                {
+                    var x = new MemoryStream();
+                    var image = Image.FromFile(images[j]);
+                    image.Save(x, ImageFormat.Png);
+                    
+                    var y = int.Parse(Path.GetFileNameWithoutExtension(images[j]).Last().ToString());
+
+                    perceptron.SetInput(DIP.GetBits(x));
+                    perceptron.SetDesiredOutput(y);
+                    perceptron.Learn();
+                }
+
+                if (perceptron.TotalError < 0.05)
+                    break;
+            }
+
+            predictedOutput.Text = perceptron.TotalError.ToString();
+        }
+
+        private void trainBtn_Click(object sender, EventArgs e)
+        {
+            Train();
         }
     }
 }
