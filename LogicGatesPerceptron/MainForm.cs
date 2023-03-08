@@ -1,5 +1,5 @@
 using LogicGatesPerceptron.Common;
-using System.Diagnostics;
+using LogicGatesPerceptron.Utils;
 using System.Drawing.Imaging;
 
 namespace LogicGatesPerceptron

@@ -1,4 +1,6 @@
-﻿namespace LogicGatesPerceptron.Common
+﻿using LogicGatesPerceptron.Utils;
+
+namespace LogicGatesPerceptron.Common
 {
     public class Perceptron
     {

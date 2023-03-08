@@ -1,4 +1,4 @@
-﻿namespace LogicGatesPerceptron.Common
+﻿namespace LogicGatesPerceptron.Utils
 {
     public class TimeStamp
     {

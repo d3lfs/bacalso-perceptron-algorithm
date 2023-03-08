@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace LogicGatesPerceptron.Common
+namespace LogicGatesPerceptron.Utils
 {
     public class DIP
     {
