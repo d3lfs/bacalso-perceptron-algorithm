@@ -30,6 +30,15 @@ namespace LogicGatesPerceptron.Common
         public double[] Weights { get => _weights; }
 
         public double TotalError { get => _totalError; }
+        
+        public double LearningRate
+        {
+            get => _learningRate;
+            set
+            {
+                _learningRate = value;
+            }
+        }
 
         public void SetInput(int[] input)
         {

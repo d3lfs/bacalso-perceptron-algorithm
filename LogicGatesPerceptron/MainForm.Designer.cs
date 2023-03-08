@@ -39,8 +39,15 @@
             this.trainBtn = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.predictedOutput = new System.Windows.Forms.Label();
+            this.totalErrorLabel = new System.Windows.Forms.Label();
+            this.dataSetsFeed = new System.Windows.Forms.ListBox();
+            this.resetPerceptronModel = new System.Windows.Forms.Button();
+            this.learningRateTrackbar = new System.Windows.Forms.TrackBar();
+            this.label5 = new System.Windows.Forms.Label();
+            this.learningRate = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasContainer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.learningRateTrackbar)).BeginInit();
             this.SuspendLayout();
             // 
             // clearBtn
@@ -55,9 +62,9 @@
             // 
             // predictBtn
             // 
-            this.predictBtn.Location = new System.Drawing.Point(143, 273);
+            this.predictBtn.Location = new System.Drawing.Point(279, 127);
             this.predictBtn.Name = "predictBtn";
-            this.predictBtn.Size = new System.Drawing.Size(119, 34);
+            this.predictBtn.Size = new System.Drawing.Size(85, 34);
             this.predictBtn.TabIndex = 2;
             this.predictBtn.Text = "Predict";
             this.predictBtn.UseVisualStyleBackColor = true;
@@ -105,15 +112,17 @@
             // 
             // epochsInput
             // 
-            this.epochsInput.Location = new System.Drawing.Point(21, 391);
+            this.epochsInput.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.epochsInput.Location = new System.Drawing.Point(21, 456);
             this.epochsInput.Name = "epochsInput";
-            this.epochsInput.Size = new System.Drawing.Size(116, 23);
+            this.epochsInput.Size = new System.Drawing.Size(116, 29);
             this.epochsInput.TabIndex = 7;
+            this.epochsInput.Text = "10";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(21, 373);
+            this.label3.Location = new System.Drawing.Point(21, 438);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(48, 15);
             this.label3.TabIndex = 8;
@@ -121,7 +130,7 @@
             // 
             // trainBtn
             // 
-            this.trainBtn.Location = new System.Drawing.Point(143, 384);
+            this.trainBtn.Location = new System.Drawing.Point(141, 454);
             this.trainBtn.Name = "trainBtn";
             this.trainBtn.Size = new System.Drawing.Size(119, 34);
             this.trainBtn.TabIndex = 9;
@@ -142,17 +151,81 @@
             // predictedOutput
             // 
             this.predictedOutput.AutoSize = true;
+            this.predictedOutput.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.predictedOutput.Location = new System.Drawing.Point(379, 39);
             this.predictedOutput.Name = "predictedOutput";
-            this.predictedOutput.Size = new System.Drawing.Size(13, 15);
+            this.predictedOutput.Size = new System.Drawing.Size(0, 37);
             this.predictedOutput.TabIndex = 11;
-            this.predictedOutput.Text = "0";
+            // 
+            // totalErrorLabel
+            // 
+            this.totalErrorLabel.AutoSize = true;
+            this.totalErrorLabel.Location = new System.Drawing.Point(279, 508);
+            this.totalErrorLabel.Name = "totalErrorLabel";
+            this.totalErrorLabel.Size = new System.Drawing.Size(63, 15);
+            this.totalErrorLabel.TabIndex = 12;
+            this.totalErrorLabel.Text = "Total Error:";
+            // 
+            // dataSetsFeed
+            // 
+            this.dataSetsFeed.FormattingEnabled = true;
+            this.dataSetsFeed.ItemHeight = 15;
+            this.dataSetsFeed.Location = new System.Drawing.Point(279, 278);
+            this.dataSetsFeed.Name = "dataSetsFeed";
+            this.dataSetsFeed.Size = new System.Drawing.Size(300, 214);
+            this.dataSetsFeed.TabIndex = 13;
+            // 
+            // resetPerceptronModel
+            // 
+            this.resetPerceptronModel.Location = new System.Drawing.Point(21, 491);
+            this.resetPerceptronModel.Name = "resetPerceptronModel";
+            this.resetPerceptronModel.Size = new System.Drawing.Size(239, 32);
+            this.resetPerceptronModel.TabIndex = 14;
+            this.resetPerceptronModel.Text = "Reset";
+            this.resetPerceptronModel.UseVisualStyleBackColor = true;
+            this.resetPerceptronModel.Click += new System.EventHandler(this.resetPerceptronModel_Click);
+            // 
+            // learningRateTrackbar
+            // 
+            this.learningRateTrackbar.Location = new System.Drawing.Point(12, 390);
+            this.learningRateTrackbar.Maximum = 10000;
+            this.learningRateTrackbar.Minimum = 20;
+            this.learningRateTrackbar.Name = "learningRateTrackbar";
+            this.learningRateTrackbar.Size = new System.Drawing.Size(181, 45);
+            this.learningRateTrackbar.TabIndex = 15;
+            this.learningRateTrackbar.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.learningRateTrackbar.Value = 20;
+            this.learningRateTrackbar.Scroll += new System.EventHandler(this.learningRateTrackbar_Scroll);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(21, 372);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(79, 15);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "Learning Rate";
+            // 
+            // learningRate
+            // 
+            this.learningRate.AutoSize = true;
+            this.learningRate.Location = new System.Drawing.Point(192, 392);
+            this.learningRate.Name = "learningRate";
+            this.learningRate.Size = new System.Drawing.Size(13, 15);
+            this.learningRate.TabIndex = 17;
+            this.learningRate.Text = "0";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(576, 441);
+            this.ClientSize = new System.Drawing.Size(607, 554);
+            this.Controls.Add(this.learningRate);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.learningRateTrackbar);
+            this.Controls.Add(this.resetPerceptronModel);
+            this.Controls.Add(this.dataSetsFeed);
+            this.Controls.Add(this.totalErrorLabel);
             this.Controls.Add(this.predictedOutput);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.trainBtn);
@@ -168,6 +241,7 @@
             this.Text = "Logic Gates Perceptron";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasContainer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.learningRateTrackbar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -185,5 +259,11 @@
         private Button trainBtn;
         private Label label4;
         private Label predictedOutput;
+        private Label totalErrorLabel;
+        private ListBox dataSetsFeed;
+        private Button resetPerceptronModel;
+        private TrackBar learningRateTrackbar;
+        private Label label5;
+        private Label learningRate;
     }
 }

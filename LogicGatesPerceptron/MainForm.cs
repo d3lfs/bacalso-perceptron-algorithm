@@ -1,6 +1,7 @@
 using LogicGatesPerceptron.Common;
 using LogicGatesPerceptron.Utils;
 using System.Drawing.Imaging;
+using System.Windows.Forms;
 
 namespace LogicGatesPerceptron
 {
@@ -18,7 +19,8 @@ namespace LogicGatesPerceptron
         public MainForm()
         {
             InitializeComponent();
-            perceptron = new Perceptron(225, 1, 1, true);
+            perceptron = new Perceptron(225, 0.01, 1, true);
+            learningRate.Text = perceptron.LearningRate.ToString();
             
             _bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
             _canvas = Graphics.FromImage(_bmp);
@@ -85,9 +87,7 @@ namespace LogicGatesPerceptron
             var bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
 
             canvasContainer.DrawToBitmap(bmp, new Rectangle(0, 0, canvasContainer.Width, canvasContainer.Height));
-            //bmp.Save(ms, ImageFormat.Png);
             
-
             var image = DIP.ResizeImage(bmp, 15, 15);
             //image.Save(Path.Combine(AppContext.BaseDirectory, "images", $"{TimeStamp.GetUTCNow()}-{epochsInput.Text}.png"), ImageFormat.Png);
             image.Save(ms, ImageFormat.Png);
@@ -103,6 +103,10 @@ namespace LogicGatesPerceptron
             {
                 for (int j = 0; j < images.Length; j++)
                 {
+                    dataSetsFeed.Items.Add(Path.GetFileNameWithoutExtension(images[j]));
+                    dataSetsFeed.SelectedIndex = dataSetsFeed.Items.Count - 1;
+                    dataSetsFeed.SelectedIndex = -1;
+
                     var x = new MemoryStream();
                     var image = Image.FromFile(images[j]);
                     image.Save(x, ImageFormat.Png);
@@ -118,12 +122,27 @@ namespace LogicGatesPerceptron
                     break;
             }
 
-            predictedOutput.Text = Math.Abs(perceptron.TotalError).ToString();
+            totalErrorLabel.Text = $"Total Error: {Math.Abs(perceptron.TotalError).ToString()}";
         }
 
         private void trainBtn_Click(object sender, EventArgs e)
         {
             Train();
+        }
+
+        private void learningRateTrackbar_Scroll(object sender, EventArgs e)
+        {
+            double toDecimal = (double)learningRateTrackbar.Value / 10000;
+            learningRate.Text = toDecimal.ToString();
+            perceptron.LearningRate = toDecimal;
+        }
+
+        private void resetPerceptronModel_Click(object sender, EventArgs e)
+        {
+            perceptron = new Perceptron(225, 0.01, 1, true);
+            learningRate.Text = perceptron.LearningRate.ToString();
+            totalErrorLabel.Text = "0";
+            dataSetsFeed.Items.Clear();
         }
     }
 }
