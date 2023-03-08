@@ -1,6 +1,5 @@
 using LogicGatesPerceptron.Common;
 using LogicGatesPerceptron.Utils;
-using System.Diagnostics;
 using System.Drawing.Imaging;
 
 namespace LogicGatesPerceptron
@@ -19,7 +18,7 @@ namespace LogicGatesPerceptron
         public MainForm()
         {
             InitializeComponent();
-            perceptron = new Perceptron(225, 0.001, 1, true);
+            perceptron = new Perceptron(225, 1, 1, true);
             
             _bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
             _canvas = Graphics.FromImage(_bmp);
@@ -72,6 +71,7 @@ namespace LogicGatesPerceptron
             _canvas = Graphics.FromImage(_bmp);
             canvasContainer.Image = _bmp;
             _canvas.Clear(Color.White);
+            predictedOutput.Text = string.Empty;
         }
 
         private void predictBtn_Click(object sender, EventArgs e)
@@ -85,13 +85,15 @@ namespace LogicGatesPerceptron
             var bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
 
             canvasContainer.DrawToBitmap(bmp, new Rectangle(0, 0, canvasContainer.Width, canvasContainer.Height));
-            bmp.Save(ms, ImageFormat.Png);
+            //bmp.Save(ms, ImageFormat.Png);
             
 
             var image = DIP.ResizeImage(bmp, 15, 15);
-            image.Save(Path.Combine(AppContext.BaseDirectory, "images", $"{TimeStamp.GetUTCNow()}-{epochsInput.Text}.png"), ImageFormat.Png);
+            //image.Save(Path.Combine(AppContext.BaseDirectory, "images", $"{TimeStamp.GetUTCNow()}-{epochsInput.Text}.png"), ImageFormat.Png);
+            image.Save(ms, ImageFormat.Png);
 
             pictureBox.Image = image;
+            predictedOutput.Text = perceptron.Prediction(DIP.GetBits(ms));
         }
 
         private void Train()
@@ -112,11 +114,11 @@ namespace LogicGatesPerceptron
                     perceptron.Learn();
                 }
 
-                if (perceptron.TotalError < 0.05)
+                if (perceptron.TotalError < 0.5)
                     break;
             }
 
-            predictedOutput.Text = perceptron.TotalError.ToString();
+            predictedOutput.Text = Math.Abs(perceptron.TotalError).ToString();
         }
 
         private void trainBtn_Click(object sender, EventArgs e)

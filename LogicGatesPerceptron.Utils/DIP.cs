@@ -87,13 +87,15 @@ namespace LogicGatesPerceptron.Utils
                     if ((a > 0) && (r > 0) && (g > 0) && (b > 0))
                     {
                         binData = binData + "0";
+                        Trace.WriteLine("0 ");
                     }
                     else
                     {
                         binData = binData + "1";
+                        Trace.WriteLine("1 ");
                     }
                 }
-
+                Trace.WriteLine("");
             }
 
             return binData;
@@ -129,7 +131,6 @@ namespace LogicGatesPerceptron.Utils
                     {
                         bits[k] = 1;
                     }
-
                     k++;
                 }
             }

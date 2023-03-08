@@ -1,5 +1,4 @@
 ﻿using LogicGatesPerceptron.Utils;
-using System.Diagnostics;
 
 namespace LogicGatesPerceptron.Common
 {
@@ -42,18 +41,12 @@ namespace LogicGatesPerceptron.Common
             _output = output;
         }
 
-        public int Prediction(string input)
-        {
-            int[] inputArr = new int[input.Length];
-            for (int i = 0; i < input.Length; i++)
-            {
-                inputArr[i] = int.Parse(input[i].ToString());
-            }
-            
-            var linear_output = NetInput(inputArr);
+        public string Prediction(int[] input)
+        {   
+            var linear_output = NetInput(input);
             var y_pred = Activation(linear_output);
 
-            return y_pred > 0.5 ? 1 : 0;
+            return y_pred > 0.5 ? "vowel" : "consonant";
         }
 
         /// <summary>
@@ -66,7 +59,7 @@ namespace LogicGatesPerceptron.Common
             double dotProduct = 0;
             for (int i = 0; i < input.Length; i++)
             {
-                dotProduct += _weights[i] * int.Parse(_input[i].ToString());
+                dotProduct += _weights[i] * input[i];
             }
 
             dotProduct += _bias;
