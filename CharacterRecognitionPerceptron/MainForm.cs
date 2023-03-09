@@ -101,11 +101,11 @@ namespace CharacterRecognitionPerceptron
 
         private async Task Train(CancellationToken token)
         {
-            var images = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "images"), "*.png")
+            var images = Directory.GetFiles(dataSetPath.Text, "*.png")
                             .Where(file => !file.Contains("original"))
                             .ToArray();
 
-            var originalImages = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "images"), "*.png")
+            var originalImages = Directory.GetFiles(dataSetPath.Text, "*.png")
                            .Where(file => file.Contains("original"))
                            .ToArray();
             
@@ -216,7 +216,7 @@ namespace CharacterRecognitionPerceptron
 
         private void randCharImageBtn_Click(object sender, EventArgs e)
         {
-            var images = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "images"), "*.png")
+            var images = Directory.GetFiles(dataSetPath.Text, "*.png")
                             .Where(file => file.Contains("original"))
                             .ToArray();
 
@@ -261,6 +261,17 @@ namespace CharacterRecognitionPerceptron
             }
             catch { }
             return false;
+        }
+
+        private void loadDataSetBtn_Click(object sender, EventArgs e)
+        {
+            // open file dialog and select directory only
+            using var fbd = new FolderBrowserDialog();
+            fbd.Description = "Select the directory that contains the images";
+            fbd.ShowNewFolderButton = false;
+            fbd.RootFolder = Environment.SpecialFolder.MyComputer;
+
+            dataSetPath.Text = fbd.ShowDialog() == DialogResult.OK ? fbd.SelectedPath : string.Empty;
         }
     }
 }

@@ -49,6 +49,8 @@
             this.stopTraining = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.epochsLabel = new System.Windows.Forms.Label();
+            this.loadDataSetBtn = new System.Windows.Forms.Button();
+            this.dataSetPath = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasContainer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.learningRateTrackbar)).BeginInit();
@@ -117,7 +119,7 @@
             // epochsInput
             // 
             this.epochsInput.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.epochsInput.Location = new System.Drawing.Point(21, 456);
+            this.epochsInput.Location = new System.Drawing.Point(21, 483);
             this.epochsInput.Name = "epochsInput";
             this.epochsInput.Size = new System.Drawing.Size(116, 29);
             this.epochsInput.TabIndex = 7;
@@ -126,7 +128,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(21, 438);
+            this.label3.Location = new System.Drawing.Point(21, 465);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(48, 15);
             this.label3.TabIndex = 8;
@@ -134,7 +136,7 @@
             // 
             // trainBtn
             // 
-            this.trainBtn.Location = new System.Drawing.Point(141, 454);
+            this.trainBtn.Location = new System.Drawing.Point(141, 481);
             this.trainBtn.Name = "trainBtn";
             this.trainBtn.Size = new System.Drawing.Size(119, 34);
             this.trainBtn.TabIndex = 9;
@@ -176,12 +178,12 @@
             this.dataSetsFeed.ItemHeight = 15;
             this.dataSetsFeed.Location = new System.Drawing.Point(279, 372);
             this.dataSetsFeed.Name = "dataSetsFeed";
-            this.dataSetsFeed.Size = new System.Drawing.Size(320, 199);
+            this.dataSetsFeed.Size = new System.Drawing.Size(320, 214);
             this.dataSetsFeed.TabIndex = 13;
             // 
             // resetPerceptronModel
             // 
-            this.resetPerceptronModel.Location = new System.Drawing.Point(21, 531);
+            this.resetPerceptronModel.Location = new System.Drawing.Point(21, 558);
             this.resetPerceptronModel.Name = "resetPerceptronModel";
             this.resetPerceptronModel.Size = new System.Drawing.Size(239, 32);
             this.resetPerceptronModel.TabIndex = 14;
@@ -231,7 +233,7 @@
             // 
             // stopTraining
             // 
-            this.stopTraining.Location = new System.Drawing.Point(21, 493);
+            this.stopTraining.Location = new System.Drawing.Point(21, 520);
             this.stopTraining.Name = "stopTraining";
             this.stopTraining.Size = new System.Drawing.Size(239, 32);
             this.stopTraining.TabIndex = 20;
@@ -258,11 +260,34 @@
             this.epochsLabel.TabIndex = 22;
             this.epochsLabel.Text = "Epochs: ";
             // 
+            // loadDataSetBtn
+            // 
+            this.loadDataSetBtn.Location = new System.Drawing.Point(141, 430);
+            this.loadDataSetBtn.Name = "loadDataSetBtn";
+            this.loadDataSetBtn.Size = new System.Drawing.Size(119, 34);
+            this.loadDataSetBtn.TabIndex = 23;
+            this.loadDataSetBtn.Text = "Load data set";
+            this.loadDataSetBtn.UseVisualStyleBackColor = true;
+            this.loadDataSetBtn.Click += new System.EventHandler(this.loadDataSetBtn_Click);
+            // 
+            // dataSetPath
+            // 
+            this.dataSetPath.AutoSize = true;
+            this.dataSetPath.ForeColor = System.Drawing.Color.Gray;
+            this.dataSetPath.Location = new System.Drawing.Point(23, 434);
+            this.dataSetPath.MaximumSize = new System.Drawing.Size(106, 15);
+            this.dataSetPath.Name = "dataSetPath";
+            this.dataSetPath.Size = new System.Drawing.Size(106, 15);
+            this.dataSetPath.TabIndex = 24;
+            this.dataSetPath.Text = "No data set loaded";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(624, 595);
+            this.ClientSize = new System.Drawing.Size(624, 610);
+            this.Controls.Add(this.dataSetPath);
+            this.Controls.Add(this.loadDataSetBtn);
             this.Controls.Add(this.epochsLabel);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.stopTraining);
@@ -316,5 +341,7 @@
         private Button stopTraining;
         private Label label6;
         private Label epochsLabel;
+        private Button loadDataSetBtn;
+        private Label dataSetPath;
     }
 }
