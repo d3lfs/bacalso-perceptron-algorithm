@@ -4,8 +4,18 @@ using System.Drawing.Imaging;
 
 namespace CharacterRecognitionPerceptron.Utils
 {
+    /// <summary>
+    /// Data Image Processing (DIP) helper class.
+    /// </summary>
     public class DIP
     {
+        /// <summary>
+        /// Resizes an image to a new width and height.
+        /// </summary>
+        /// <param name="image">The image to resize</param>
+        /// <param name="newWidth">The new width for image</param>
+        /// <param name="newHeight">The new height for image</param>
+        /// <returns>The newly resized image.</returns>
         public static Image ResizeImage(Image image, int newWidth, int newHeight)
         {
             int sourceWidth = image.Width;
@@ -63,6 +73,10 @@ namespace CharacterRecognitionPerceptron.Utils
             return bmPhoto;
         }
 
+        /// <summary>
+        /// Returns a string of bits from a bitmap image.
+        /// </summary>
+        /// <param name="memoryStream">The streamed image from bitmap.</param>
         public static String GetBitsString(MemoryStream memoryStream)
         {
             var img = Image.FromStream(memoryStream);
@@ -101,6 +115,10 @@ namespace CharacterRecognitionPerceptron.Utils
             return binData;
         }
 
+        /// <summary>
+        /// Returns array of bits from a bitmap image.
+        /// </summary>
+        /// <param name="memoryStream">The streamed image from bitmap.</param>
         public static int[] GetBits(MemoryStream memoryStream)
         {
             var img = Image.FromStream(memoryStream);

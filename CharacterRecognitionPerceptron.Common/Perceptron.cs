@@ -2,6 +2,9 @@
 
 namespace CharacterRecognitionPerceptron.Common
 {
+    /// <summary>
+    /// This class represents a perceptron.
+    /// </summary>
     public class Perceptron
     {
         private double _bias;
@@ -26,11 +29,20 @@ namespace CharacterRecognitionPerceptron.Common
                 _weights = Array<double>.NormalDistribution(weightSize);
             }
         }
-        
+
+        /// <summary>
+        /// This property will return the weights of the perceptron.
+        /// </summary>
         public double[] Weights { get => _weights; }
 
+        /// <summary>
+        /// This property will return the total error.
+        /// </summary>
         public double TotalError { get => _totalError; }
         
+        /// <summary>
+        /// This will property will be used to set and get learning rate of the perceptron
+        /// </summary>
         public double LearningRate
         {
             get => _learningRate;
@@ -40,16 +52,29 @@ namespace CharacterRecognitionPerceptron.Common
             }
         }
 
+        /// <summary>
+        /// This method will set the <paramref name="input"/>
+        /// </summary>
+        /// <param name="input">The input X_i array</param>
         public void SetInput(int[] input)
         {
             _input = input;
         }
 
+        /// <summary>
+        /// This method will set the corresponding <paramref name="output"/> of input
+        /// </summary>
+        /// <param name="output">The output y</param>
         public void SetDesiredOutput(int output)
         {
             _output = output;
         }
 
+        /// <summary>
+        /// This method will predict the given <paramref name="input"/>
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns>The prediction if vowel; otherwise consonant</returns>
         public string Prediction(int[] input)
         {   
             var linear_output = NetInput(input);
