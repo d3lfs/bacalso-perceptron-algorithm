@@ -113,9 +113,8 @@ namespace CharacterRecognitionPerceptron.Common
         }
 
         /// <summary>
-        ///  This method will train the perceptron with the given input instances.
+        ///  This method will train the perceptron from the given input instances.
         /// </summary>
-        /// <param name="epoch">The number of iterations to train the perceptron</param>
         public void Learn()
         {
             var linear_output = NetInput(_input);
@@ -127,8 +126,10 @@ namespace CharacterRecognitionPerceptron.Common
             {
                 _weights[i] += _learningRate * error * _input[i];
             }
-
+            
+            // Update bias
             _bias += _learningRate * error;
+            // Sum of errors
             _totalError += error;
         }
     }
