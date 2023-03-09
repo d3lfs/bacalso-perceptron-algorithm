@@ -1,9 +1,8 @@
-using LogicGatesPerceptron.Common;
-using LogicGatesPerceptron.Utils;
+using CharacterRecognitionPerceptron.Common;
+using CharacterRecognitionPerceptron.Utils;
 using System.Drawing.Imaging;
-using System.Windows.Forms;
 
-namespace LogicGatesPerceptron
+namespace CharacterRecognitionPerceptron
 {
     public partial class MainForm : Form
     {
@@ -22,7 +21,7 @@ namespace LogicGatesPerceptron
         public MainForm()
         {
             InitializeComponent();
-            perceptron = new Perceptron(225, 0.01, 0.5, true);
+            perceptron = new Perceptron(225, 0.01, 1, true);
             learningRate.Text = perceptron.LearningRate.ToString();
 
             _bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
@@ -105,9 +104,24 @@ namespace LogicGatesPerceptron
             var images = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "images"), "*.png")
                             .Where(file => !file.Contains("original"))
                             .ToArray();
-            var rand = new Random();
-            images = images.OrderBy(x => rand.Next()).ToArray();
 
+            var originalImages = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "images"), "*.png")
+                           .Where(file => file.Contains("original"))
+                           .ToArray();
+            
+            var rand = new Random();
+            var imageDictionary = new Dictionary<string, string>();
+            for (int i = 0; i < images.Length; i++)
+            {
+                imageDictionary.Add(images[i], originalImages[i]);
+            }
+
+            imageDictionary = imageDictionary.OrderBy(x => rand.Next()).ToDictionary(x => x.Key, x => x.Value);
+
+            images = imageDictionary.Keys.ToArray();
+            originalImages = imageDictionary.Values.ToArray();
+
+            int countEpoch = 0;
             for (int i = 0; i < Convert.ToInt32(epochsInput.Text) && !token.IsCancellationRequested; i++)
             {
                 for (int j = 0; j < images.Length && !token.IsCancellationRequested; j++)
@@ -116,13 +130,17 @@ namespace LogicGatesPerceptron
                     {
                         dataSetsFeed.Items.Add($"Img: {Path.GetFileNameWithoutExtension(images[j])}   T: {Math.Abs(perceptron.TotalError)}");
                         dataSetsFeed.SelectedIndex = dataSetsFeed.Items.Count - 1;
-                    }));
-                   
+                    }));     
 
                     var x = new MemoryStream();
                     var image = Image.FromFile(images[j]);
                     image.Save(x, ImageFormat.Png);
-                    
+
+                    pictureBox.Image = image;
+
+                    _canvas = Graphics.FromImage(Image.FromFile(originalImages[j]));
+                    canvasContainer.Image = Image.FromFile(originalImages[j]);
+
                     var y = int.Parse(Path.GetFileNameWithoutExtension(images[j]).Last().ToString());
 
                     // Set Perceptron Input and DesiredOutput Here
@@ -133,8 +151,17 @@ namespace LogicGatesPerceptron
                 }
 
                 if (Math.Abs(perceptron.TotalError) < 0.01)
+                {
+                    _ctsAuto!.Cancel();
                     break;
+                }
+                countEpoch++;
             }
+
+            epochsLabel.Invoke(new Action(() =>
+            {
+                epochsLabel.Text = $"Epochs: {countEpoch}";
+            }));
 
             totalErrorLabel.Invoke(new Action(() =>
             {
@@ -142,12 +169,15 @@ namespace LogicGatesPerceptron
             }));
         }
 
-        
-
-        private void trainBtn_Click(object sender, EventArgs e)
+        private async void trainBtn_Click(object sender, EventArgs e)
         {
+            trainBtn.Enabled = false;
+            resetPerceptronModel.Enabled = false;
+            learningRateTrackbar.Enabled = false;
+            epochsInput.Enabled = false;
+
             _ctsAuto = new CancellationTokenSource();
-            _trainTask = Task.Run(async () =>
+            _trainTask = await Task.Factory.StartNew(async () =>
             {
                 try
                 {
@@ -161,22 +191,26 @@ namespace LogicGatesPerceptron
                 }
             }, _ctsAuto!.Token);
 
-            trainBtn.Enabled = false;
-            resetPerceptronModel.Enabled = false;
+            await ForTrueAsync(() => _ctsAuto is null, 20);
+
+            trainBtn.Enabled = true;
+            resetPerceptronModel.Enabled = true;
+            learningRateTrackbar.Enabled = true;
+            epochsInput.Enabled = true;
         }
 
         private void learningRateTrackbar_Scroll(object sender, EventArgs e)
         {
-            double toDecimal = (double)learningRateTrackbar.Value / 10000;
+            double toDecimal = (double)learningRateTrackbar.Value / 1000;
             learningRate.Text = toDecimal.ToString();
             perceptron.LearningRate = toDecimal;
         }
 
         private void resetPerceptronModel_Click(object sender, EventArgs e)
         {
-            perceptron = new Perceptron(225, 0.01, 1, true);
-            learningRate.Text = perceptron.LearningRate.ToString();
+            perceptron = new Perceptron(225, double.Parse(learningRate.Text), 1, true);
             totalErrorLabel.Text = "Total Error:";
+            epochsLabel.Text = $"Epochs:";
             dataSetsFeed.Items.Clear();
         }
 
@@ -198,8 +232,11 @@ namespace LogicGatesPerceptron
             _ctsAuto?.Cancel();
             await ForTrueAsync(() => _ctsAuto is null, 20);
             _trainTask?.Dispose();
+            
             trainBtn.Enabled = true;
             resetPerceptronModel.Enabled = true;
+            learningRateTrackbar.Enabled = true;
+            epochsInput.Enabled = true;
         }
 
         public async ValueTask<bool> ForTrueAsync(Func<bool> predicate, int timeout, int sleepOverride = -1, CancellationToken token = default)

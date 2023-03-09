@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace LogicGatesPerceptron.Utils
+namespace CharacterRecognitionPerceptron.Utils
 {
     public class DIP
     {

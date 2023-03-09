@@ -1,4 +1,4 @@
-﻿namespace LogicGatesPerceptron.Common
+﻿namespace CharacterRecognitionPerceptron.Common
 {
     public class ImageDataSet
     {

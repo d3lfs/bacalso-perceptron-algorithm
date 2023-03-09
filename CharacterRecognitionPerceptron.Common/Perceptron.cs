@@ -1,6 +1,6 @@
-﻿using LogicGatesPerceptron.Utils;
+﻿using CharacterRecognitionPerceptron.Utils;
 
-namespace LogicGatesPerceptron.Common
+namespace CharacterRecognitionPerceptron.Common
 {
     public class Perceptron
     {

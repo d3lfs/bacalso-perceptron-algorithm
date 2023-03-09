@@ -1,4 +1,4 @@
-﻿namespace LogicGatesPerceptron.Utils
+﻿namespace CharacterRecognitionPerceptron.Utils
 {
     public class Array<T>
     {

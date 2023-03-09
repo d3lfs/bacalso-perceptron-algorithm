@@ -1,4 +1,4 @@
-namespace LogicGatesPerceptron
+namespace CharacterRecognitionPerceptron
 {
     internal static class Program
     {

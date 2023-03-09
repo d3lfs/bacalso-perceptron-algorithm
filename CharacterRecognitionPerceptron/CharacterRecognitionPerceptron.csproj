@@ -9,12 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LogicGatesPerceptron.Common\LogicGatesPerceptron.Common.csproj" />
-    <ProjectReference Include="..\LogicGatesPerceptron.Utils\LogicGatesPerceptron.Utils.csproj" />
+    <Compile Remove="images\**" />
+    <EmbeddedResource Remove="images\**" />
+    <None Remove="images\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="images\" />
+    <ProjectReference Include="..\CharacterRecognitionPerceptron.Common\CharacterRecognitionPerceptron.Common.csproj" />
+    <ProjectReference Include="..\CharacterRecognitionPerceptron.Utils\CharacterRecognitionPerceptron.Utils.csproj" />
   </ItemGroup>
 
 </Project>

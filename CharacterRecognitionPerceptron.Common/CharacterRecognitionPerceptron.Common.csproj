@@ -7,6 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LogicGatesPerceptron.Utils\LogicGatesPerceptron.Utils.csproj" />
+    <ProjectReference Include="..\CharacterRecognitionPerceptron.Utils\CharacterRecognitionPerceptron.Utils.csproj" />
   </ItemGroup>
 </Project>
