@@ -285,7 +285,7 @@
             this.Controls.Add(this.predictBtn);
             this.Controls.Add(this.clearBtn);
             this.Name = "MainForm";
-            this.Text = "Logic Gates Perceptron";
+            this.Text = "Vowel Recognition Perceptron";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasContainer)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.learningRateTrackbar)).EndInit();
