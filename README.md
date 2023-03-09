@@ -1,1 +1,1 @@
-# Vowel recognition using C#
+# Vowel recognition with perceptron algorithm
