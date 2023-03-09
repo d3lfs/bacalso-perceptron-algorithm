@@ -109,13 +109,14 @@ namespace CharacterRecognitionPerceptron
                            .Where(file => file.Contains("original"))
                            .ToArray();
             
-            var rand = new Random();
             var imageDictionary = new Dictionary<string, string>();
             for (int i = 0; i < images.Length; i++)
             {
                 imageDictionary.Add(images[i], originalImages[i]);
             }
 
+            // Shuffle data set to avoid overfitting
+            var rand = new Random();
             imageDictionary = imageDictionary.OrderBy(x => rand.Next()).ToDictionary(x => x.Key, x => x.Value);
 
             images = imageDictionary.Keys.ToArray();
@@ -136,18 +137,18 @@ namespace CharacterRecognitionPerceptron
                     var image = Image.FromFile(images[j]);
                     image.Save(x, ImageFormat.Png);
 
-                    pictureBox.Image = image;
-
-                    _canvas = Graphics.FromImage(Image.FromFile(originalImages[j]));
-                    canvasContainer.Image = Image.FromFile(originalImages[j]);
-
                     var y = int.Parse(Path.GetFileNameWithoutExtension(images[j]).Last().ToString());
 
-                    // Set Perceptron Input and DesiredOutput Here
+                // Set Perceptron Input and DesiredOutput Here
+                // ----------------------------------------
                     perceptron.SetInput(DIP.GetBits(x));
                     perceptron.SetDesiredOutput(y);
-                    // Start Training
                     perceptron.Learn();
+                // ----------------------------------------
+
+                    pictureBox.Image = image;
+                    _canvas = Graphics.FromImage(Image.FromFile(originalImages[j]));
+                    canvasContainer.Image = Image.FromFile(originalImages[j]);
                 }
 
                 if (Math.Abs(perceptron.TotalError) < 0.01)
@@ -155,6 +156,7 @@ namespace CharacterRecognitionPerceptron
                     _ctsAuto!.Cancel();
                     break;
                 }
+                
                 countEpoch++;
             }
 
@@ -171,6 +173,13 @@ namespace CharacterRecognitionPerceptron
 
         private async void trainBtn_Click(object sender, EventArgs e)
         {
+            if (dataSetPath.Text.Contains("No data set loaded"))
+            {
+                MessageBox.Show("Please select a data set first", "No data set loaded", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+            
             trainBtn.Enabled = false;
             resetPerceptronModel.Enabled = false;
             learningRateTrackbar.Enabled = false;
@@ -216,6 +225,13 @@ namespace CharacterRecognitionPerceptron
 
         private void randCharImageBtn_Click(object sender, EventArgs e)
         {
+            if (dataSetPath.Text.Contains("No data set loaded"))
+            {
+                MessageBox.Show("Please select a data set first", "No data set loaded", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+                
             var images = Directory.GetFiles(dataSetPath.Text, "*.png")
                             .Where(file => file.Contains("original"))
                             .ToArray();
@@ -225,6 +241,17 @@ namespace CharacterRecognitionPerceptron
             var image = Image.FromFile(images[rand.Next(0, images.Length)]);
             _canvas = Graphics.FromImage(image);
             canvasContainer.Image = image;
+        }
+
+        private void loadDataSetBtn_Click(object sender, EventArgs e)
+        {
+            // open file dialog and select directory only
+            using var fbd = new FolderBrowserDialog();
+            fbd.Description = "Select the directory that contains the images";
+            fbd.ShowNewFolderButton = false;
+            fbd.RootFolder = Environment.SpecialFolder.MyComputer;
+
+            dataSetPath.Text = fbd.ShowDialog() == DialogResult.OK ? fbd.SelectedPath : string.Empty;
         }
 
         private async void stopTraining_Click(object sender, EventArgs e)
@@ -244,7 +271,7 @@ namespace CharacterRecognitionPerceptron
             return await ForTrueAsync(predicate, null, timeout, sleepOverride, token);
         }
 
-        public async ValueTask<bool> ForTrueAsync(Func<bool> predicate, Action? loopFunction, int timeout, int sleepOverride = -1, CancellationToken token = default)
+        private async ValueTask<bool> ForTrueAsync(Func<bool> predicate, Action? loopFunction, int timeout, int sleepOverride = -1, CancellationToken token = default)
         {
             try
             {
@@ -261,17 +288,6 @@ namespace CharacterRecognitionPerceptron
             }
             catch { }
             return false;
-        }
-
-        private void loadDataSetBtn_Click(object sender, EventArgs e)
-        {
-            // open file dialog and select directory only
-            using var fbd = new FolderBrowserDialog();
-            fbd.Description = "Select the directory that contains the images";
-            fbd.ShowNewFolderButton = false;
-            fbd.RootFolder = Environment.SpecialFolder.MyComputer;
-
-            dataSetPath.Text = fbd.ShowDialog() == DialogResult.OK ? fbd.SelectedPath : string.Empty;
         }
     }
 }
